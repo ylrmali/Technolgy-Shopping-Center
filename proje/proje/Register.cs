@@ -38,13 +38,14 @@ namespace proje
                     connection.Open();
 
 
-                    string sql = "INSERT INTO user (username, password, mail) VALUES (@username, @password, @mail)";
+                    string sql = "INSERT INTO user (username, password, mail, wallet) VALUES (@username, @password, @mail, @wallet)";
 
                     using (SQLiteCommand command = new SQLiteCommand(sql, connection))
                     {
                         command.Parameters.AddWithValue("@username", username);
                         command.Parameters.AddWithValue("@password", password);
                         command.Parameters.AddWithValue("@mail", mail);
+                        command.Parameters.AddWithValue("@wallet", "0");
 
                         try
                         {

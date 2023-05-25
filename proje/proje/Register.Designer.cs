@@ -105,11 +105,11 @@
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
             this.label4.ForeColor = System.Drawing.Color.Gainsboro;
-            this.label4.Location = new System.Drawing.Point(134, 311);
+            this.label4.Location = new System.Drawing.Point(100, 311);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(122, 25);
+            this.label4.Size = new System.Drawing.Size(171, 25);
             this.label4.TabIndex = 7;
-            this.label4.Text = "RePassword";
+            this.label4.Text = "Confirm Password";
             // 
             // register_reg
             // 
