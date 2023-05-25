@@ -23,3 +23,5 @@ C:\Users\ali\source\repos\proje\proje\obj\Debug\proje.pdb
 C:\Users\ali\source\repos\proje\proje\bin\Debug\proje.pdb
 C:\Users\ali\source\repos\proje\proje\obj\Debug\proje.Wallet.resources
 C:\Users\ali\source\repos\proje\proje\obj\Debug\proje.Laptop.resources
+C:\Users\ali\source\repos\proje\proje\obj\Debug\proje.Phone.resources
+C:\Users\ali\source\repos\proje\proje\obj\Debug\proje.Accessory.resources

@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using System.Data.SQLite;
 using System.Data.SqlClient;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
+using System.Data.Common;
 
 
 namespace proje
@@ -21,12 +22,28 @@ namespace proje
             InitializeComponent();
         }
 
+       
+        private string user;
+        private string pass;
+
+        public string Usr
+        {
+            get { return user; }
+            set { user = value; }
+        }
+
+        public string Pass
+        {
+            get { return pass; }
+            set { pass = value; }
+        }
+
         private string userName;
         private void Authenticate(string username, string password)
         {
-            //sql connection
-            string user = string.Empty;
-            string pass = string.Empty;
+            Login login = new Login();
+
+            
             string connectionString = "Data Source=C:\\Users\\ali\\Desktop\\a.db;Version=3;";
             using (SQLiteConnection connection = new SQLiteConnection(connectionString))
             {
@@ -41,17 +58,25 @@ namespace proje
                         while (reader.Read())
                         {
                             // Access the data using reader
-                            user = reader.GetString(0);
-                            pass = reader.GetString(1);
+                            login.Usr = reader.GetString(0);
+                            login.Pass = reader.GetString(1);
                         }
                     }
                 }
+
                 connection.Close();
             }
+            //string user = login.User;
+            //string pass = login.Password;
+
             // control datas 
-            if (username == user && password == pass)
+            if (username == login.Usr && password == login.Pass)
             {
-                set_username(user);
+                // first delete old instance 
+                DeleteUser();
+                // create current user table for user process
+                CreateUser(username);
+
                 Shop newForm = new Shop();
                 newForm.Show();
             }
@@ -62,17 +87,52 @@ namespace proje
 
         }
 
-        public object set_username(string username)
+
+        // create current user session
+        public void CreateUser(string username)
         {
-            userName = username;
-            return this;
+            string connectionString = "Data Source=C:\\Users\\ali\\Desktop\\a.db;Version=3;";
+            using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+            {
+                connection.Open();
+
+                string sql = "CREATE TABLE IF NOT EXISTS current_user (id INTEGER PRIMARY KEY, username TEXT)";
+                using (SQLiteCommand command = new SQLiteCommand(sql, connection))
+                {
+                    command.ExecuteNonQuery();
+                }
+
+                //add current user into current user table
+                string sql2 = "INSERT INTO current_user (id, username) values (1, @username)";
+                using (SQLiteCommand command2 = new SQLiteCommand(sql2, connection))
+                {
+                    command2.Parameters.AddWithValue("@username", username);
+                    command2.ExecuteNonQuery();
+                }
+
+                connection.Close();
+
+            }
         }
 
-        public string get_username()
+        // delete current user session
+        public void DeleteUser()
         {
-            return userName;
-        }
+            
+            string connectionString = "Data Source=C:\\Users\\ali\\Desktop\\a.db;Version=3;";
+            using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+            {
+                connection.Open();
 
+                string sql = "DROP TABLE IF EXISTS current_user";
+                using (SQLiteCommand command = new SQLiteCommand(sql, connection))
+                {
+                    command.ExecuteNonQuery();
+                }
+
+                connection.Close();
+            }
+        }
 
 
         private void login_login_Click(object sender, EventArgs e)

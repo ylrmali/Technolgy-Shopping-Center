@@ -9,108 +9,111 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace proje
 {
     public partial class Laptop : UserControl
     {
-       
-        public string ProductName { get; set; }
-        public string ProductPrice { get; set; }
-        public string ProductImagePath { get; set; }
-        public List<Laptop> products = new List<Laptop>();
-
-        public void GetDatas()
+       public string GetUserBalance()
         {
-            Dictionary < string, string[]> myDict = new Dictionary<string, string[]>();
-            List<string[]> myList = new List<string[]>();
-            // Retrieve data from the SQLite database
+            Shop shop = new Shop();
+            // get datas list
+            List<string> instance = shop.GetUserDatas();
+
+            string balance = instance[2];
+
+            return balance;
+        }
+
+        public string GetUserName()
+        {
+            Shop shop = new Shop();
+            // get datas list
+            List<string> instance = shop.GetUserDatas();
+
+            string username = instance[0];
+
+            return username;
+        }
+        
+        // get product price dynamicly
+        public string GetProductPrice(int id, string table)
+        {
+            string price = string.Empty; 
             string connectionString = "Data Source=C:\\Users\\ali\\Desktop\\a.db;Version=3;";
             using (SQLiteConnection connection = new SQLiteConnection(connectionString))
             {
                 connection.Open();
 
-                string sql = "SELECT id, name, price, imagepath FROM laptop";
+                string sql = $"SELECT price FROM {table} WHERE id = @id";
                 using (SQLiteCommand command = new SQLiteCommand(sql, connection))
                 {
+                    command.Parameters.AddWithValue("table", table);
+                    command.Parameters.AddWithValue("@id", id);
                     using (SQLiteDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())
                         {
-                            var id = reader.GetInt32(0).ToString();
-                            var name = reader.GetString(1).ToString();
-                            var price = reader.GetString(2).ToString();
-                            var imagepath = reader.GetString(3).ToString();
-                            string[] myArr = { name, price, imagepath };
-                           
-                            myDict.Add(id, myArr);
+                            price = reader.GetString(0);
+
                         }
                     }
                 }
 
                 connection.Close();
             }
-
-            // Using foreach loop with var
-            foreach (var kvp in myDict)
-            {
-                string key = kvp.Key;
-                string[] value = kvp.Value;
-                string name = value[0];
-                string price = value[1];
-                string imagepath = value[2];
-                CreateProducts(name, price, imagepath);
-
-                MessageBox.Show($"Key: {key}, name: {name}, price: {price}, img: {imagepath}");
-            }
-
-            //MessageBox.Show(products.Count.ToString());
+            return price;
         }
 
-        public void CreateProducts(string name, string price, string imagepath)
+        // product buying function
+        public string BuyProduct(string  productPrice, string userBalance, string userName) 
         {
-            // Create and position group boxes dynamically
-            int groupBoxHeight = 150;
-            int groupBoxWidth = 200;
-            int spacing = 20;
-            int startX = 20;
-            int startY = 20;
 
-            GroupBox groupBox = new GroupBox();
-            groupBox.Text = name;
-            groupBox.Size = new Size(groupBoxWidth, groupBoxHeight);
-            groupBox.Location = new Point(startX, startY);
+            DialogResult result = MessageBox.Show("Do you want to continue?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
-            PictureBox pictureBox = new PictureBox();
-            pictureBox.Image = Image.FromFile(imagepath);
-            pictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
-            pictureBox.Size = new Size(groupBoxWidth - 20, groupBoxHeight - 80);
-            pictureBox.Location = new Point(10, 30);
+            if (result == DialogResult.Yes)
+            {
+                // if user want to buy
+                if (Convert.ToDouble(userBalance) >= Convert.ToDouble(productPrice))
+                {
+                    double newBalance = Convert.ToDouble(userBalance) - Convert.ToDouble(productPrice);
+                    string connectionString = "Data Source=C:\\Users\\ali\\Desktop\\a.db;Version=3;";
+                    using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+                    {
+                        connection.Open();
 
-            Label nameLabel = new Label();
-            nameLabel.Text = name;
-            nameLabel.Location = new Point(10, groupBoxHeight - 40);
+                        string sql = "UPDATE user SET wallet = @newBalance WHERE username = @username";
+                        using (SQLiteCommand command = new SQLiteCommand(sql, connection))
+                        {
+                            command.Parameters.AddWithValue("@newBalance", newBalance.ToString());
+                            command.Parameters.AddWithValue("@username", userName);
+                            command.ExecuteNonQuery();
+                        }
 
-            Label priceLabel = new Label();
-            priceLabel.Text = price;
-            priceLabel.Location = new Point(10, groupBoxHeight - 20);
+                        connection.Close();
+                    }
 
-            // Add the controls to the group box
-            groupBox.Controls.Add(pictureBox);
-            groupBox.Controls.Add(nameLabel);
-            groupBox.Controls.Add(priceLabel);
+                    MessageBox.Show($"Your current balance is {newBalance} TL", "New Balance", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-            // Add the group box to the form
-            this.Controls.Add(groupBox);
-
-            // Update the starting Y position for the next group box
-            startY += groupBoxHeight + spacing;
+                }
+                else
+                {
+                    MessageBox.Show("Your balance is not enough for buying this product. Go to wallet and deposit money!", "Balance is not enough", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
+            else if (result == DialogResult.No)
+            {
+                // User clicked the "No" button
+                // Perform the desired action or simply close the message box
+            }
+            return productPrice;
         }
+
 
         public Laptop()
         {
             InitializeComponent();
-            GetDatas();
         }
 
 
@@ -128,6 +131,52 @@ namespace proje
         private void label1_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void Laptop_Load(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void label9_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            string price = GetProductPrice(1, "laptop");
+            BuyProduct(price, GetUserBalance(), GetUserName());
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            string price = GetProductPrice(2, "laptop");
+            BuyProduct(price, GetUserBalance(), GetUserName());
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            string price = GetProductPrice(3, "laptop");
+            BuyProduct(price, GetUserBalance(), GetUserName());
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            string price = GetProductPrice(4, "laptop");
+            BuyProduct(price, GetUserBalance(), GetUserName());
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            string price = GetProductPrice(5, "laptop");
+            BuyProduct(price, GetUserBalance(), GetUserName());
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            string price = GetProductPrice(6, "laptop");
+            BuyProduct(price, GetUserBalance(), GetUserName());
         }
     }
 

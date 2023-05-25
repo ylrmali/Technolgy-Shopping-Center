@@ -37,5 +37,10 @@ namespace proje
             login1.Visible = false;
             register1.Visible = true;
         }
+
+        private void control_Enter(object sender, EventArgs e)
+        {
+
+        }
     }
 }

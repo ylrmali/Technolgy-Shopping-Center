@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.login_button = new System.Windows.Forms.Button();
             this.register_button = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
@@ -80,13 +79,13 @@
             this.control.Size = new System.Drawing.Size(370, 523);
             this.control.TabIndex = 4;
             this.control.TabStop = false;
+            this.control.Enter += new System.EventHandler(this.control_Enter);
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Image = ((System.Drawing.Image)(resources.GetObject("ali.Image")));
             this.label2.Location = new System.Drawing.Point(389, 16);
-            this.label2.Name = "ali";
+            this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(0, 13);
             this.label2.TabIndex = 5;
             // 
@@ -104,8 +103,10 @@
             this.login1.BackColor = System.Drawing.SystemColors.WindowFrame;
             this.login1.Location = new System.Drawing.Point(388, 58);
             this.login1.Name = "login1";
+            this.login1.Pass = null;
             this.login1.Size = new System.Drawing.Size(400, 412);
             this.login1.TabIndex = 3;
+            this.login1.Usr = null;
             // 
             // Form1
             // 

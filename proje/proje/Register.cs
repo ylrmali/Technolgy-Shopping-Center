@@ -18,6 +18,9 @@ namespace proje
             InitializeComponent();
         }
 
+        Login login = new Login();
+
+
         string connectionString = "Data Source=C:\\Users\\ali\\Desktop\\a.db;Version=3;";
         private void register_reg_Click(object sender, EventArgs e)
         {
@@ -46,6 +49,10 @@ namespace proje
                         try
                         {
                             command.ExecuteNonQuery();
+                            // if account created successfully, create current user session
+                            login.DeleteUser();   // first drop old user session
+                            login.CreateUser(username);  // then create new user session
+
                             MessageBox.Show("Account created successfully!");
                             Shop newForm = new Shop();
                             newForm.Show();
@@ -60,6 +67,16 @@ namespace proje
                 }
 
             }
+        }
+
+        private void Register_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void username_register_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

@@ -47,6 +47,7 @@
             this.password_reg.Name = "password_reg";
             this.password_reg.Size = new System.Drawing.Size(259, 20);
             this.password_reg.TabIndex = 1;
+            this.password_reg.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.password_reg.UseSystemPasswordChar = true;
             // 
             // username_register
@@ -55,6 +56,8 @@
             this.username_register.Name = "username_register";
             this.username_register.Size = new System.Drawing.Size(259, 20);
             this.username_register.TabIndex = 2;
+            this.username_register.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.username_register.TextChanged += new System.EventHandler(this.username_register_TextChanged);
             // 
             // mail_input
             // 
@@ -62,6 +65,7 @@
             this.mail_input.Name = "mail_input";
             this.mail_input.Size = new System.Drawing.Size(259, 20);
             this.mail_input.TabIndex = 3;
+            this.mail_input.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // username
             // 
@@ -80,7 +84,7 @@
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
             this.label2.ForeColor = System.Drawing.Color.WhiteSmoke;
             this.label2.Location = new System.Drawing.Point(156, 121);
-            this.label2.Name = "ali";
+            this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(48, 25);
             this.label2.TabIndex = 5;
             this.label2.Text = "Mail";
@@ -143,6 +147,7 @@
             this.re_password.Name = "re_password";
             this.re_password.Size = new System.Drawing.Size(259, 20);
             this.re_password.TabIndex = 10;
+            this.re_password.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.re_password.UseSystemPasswordChar = true;
             // 
             // Register
@@ -163,6 +168,7 @@
             this.ForeColor = System.Drawing.Color.Black;
             this.Name = "Register";
             this.Size = new System.Drawing.Size(366, 462);
+            this.Load += new System.EventHandler(this.Register_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
